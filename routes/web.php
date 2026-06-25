@@ -19,8 +19,8 @@ Route::get('/test', function () {
 Route::get('/create', [PostController::class, 'create'])->name('create');
 Route::post('/store', [PostController::class, 'ourstore'])->name('store');
 Route::get('/edit/{id}', [PostController::class, 'editdata'])->name('edit');
-Route::put('/update/{id}', [PostController::class, 'updatedata'])->name('update');
-Route::delete('/delete/{id}', [PostController::class, 'destroy'])->name('delete');
+Route::post('/update/{id}', [PostController::class, 'updatedata'])->name('update');
+Route::get('/delete/{id}', [PostController::class, 'deletedata'])->name('delete');
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 

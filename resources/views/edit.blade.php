@@ -119,13 +119,13 @@
             <h1>Edit Post</h1>
             <p>Update the form below to modify the post.</p>
 
-            <form action="{{ route('update', ['id' => $ourPost->id]) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('update', $ourPost->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="form-group">
                     <label for="name">Post Name</label>
                     <input type="text" id="name" name="name" class="form-control"
-                        value="{{ old('name', $ourPost->name) }}" placeholder="Enter post name">
+                        value="{{ $ourPost->name }}" placeholder="Enter post name">
 
                     @error('name')
                         <div class="alert alert-danger">{{ $message }}</div>
@@ -134,8 +134,7 @@
 
                 <div class="form-group">
                     <label for="description">Post Description</label>
-                    <textarea id="description" name="description" class="form-control"
-                        value="{{ old('description', $ourPost->description) }}" placeholder="Enter post description"></textarea>
+                    <textarea id="description" name="description" class="form-control" placeholder="Enter post description">{{ $ourPost->description }}</textarea>
                     @error('description')
                         <div class="alert alert-danger">{{ $message }}</div>
                     @enderror

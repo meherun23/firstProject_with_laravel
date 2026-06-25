@@ -46,31 +46,44 @@ class PostController extends Controller
 
     public function updatedata(Request $request, $id)
     {
+        
+
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
+        
+       
+
+        
+
+        // save to DB
         $post = Post::findOrFail($id);
 
-        // safe image upload
-        if ($request->hasFile('image')) {
-            // delete old image if exists
-            if ($post->image) {
-                unlink(public_path('images/' . $post->image));
-            }
+        $post->name = $validatedData['name'];
+        $post->description = $validatedData['description'];
 
+        // update image upload
+        if ($request->hasFile('image')) {
             $imageName = time() . '.' . $request->image->extension();
             $request->image->move(public_path('images'), $imageName);
             $post->image = $imageName;
         }
-
-        // update DB
-        $post->name = $validatedData['name'];
-        $post->description = $validatedData['description'];
+        
         $post->save();
 
         return redirect()->route('test')->with('success', 'Post updated successfully!');
+
+
+    }
+
+    public function deletedata($id)
+    {
+        $post = Post::findOrFail($id);
+        $post->delete();
+
+        return redirect()->route('test')->with('success', 'Post deleted successfully!');
     }
 }
