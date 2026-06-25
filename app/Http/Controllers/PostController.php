@@ -20,70 +20,69 @@ class PostController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        // safe image upload
         $imageName = null;
 
         if ($request->hasFile('image')) {
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('images'), $imageName);
+            $imageName = Post::uploadImage(
+                $request->file('image')
+            );
         }
 
-        // save to DB
-        $post = new Post;
-        $post->name = $validatedData['name'];
-        $post->description = $validatedData['description'];
-        $post->image = $imageName;
-        $post->save();
+        Post::createPost(
+            $validatedData,
+            $imageName
+        );
 
-        return redirect()->route('test')->with('success', 'Post created successfully!');
+        return redirect()
+            ->route('test')
+            ->with('success', 'Post created successfully!');
     }
 
     public function editdata($id)
     {
         $post = Post::findOrFail($id);
-        return view('edit', ['ourPost' => $post]);
+
+        return view('edit', [
+            'ourPost' => $post
+        ]);
     }
 
     public function updatedata(Request $request, $id)
     {
-        
-
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        
-       
-
-        
-
-        // save to DB
         $post = Post::findOrFail($id);
 
-        $post->name = $validatedData['name'];
-        $post->description = $validatedData['description'];
+        $imageName = null;
 
-        // update image upload
         if ($request->hasFile('image')) {
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('images'), $imageName);
-            $post->image = $imageName;
+            $imageName = Post::uploadImage(
+                $request->file('image')
+            );
         }
-        
-        $post->save();
 
-        return redirect()->route('test')->with('success', 'Post updated successfully!');
+        $post->updatePost(
+            $validatedData,
+            $imageName
+        );
 
-
+        return redirect()
+            ->route('test')
+            ->with('success', 'Post updated successfully!');
     }
 
     public function deletedata($id)
     {
         $post = Post::findOrFail($id);
+
         $post->delete();
 
-        return redirect()->route('test')->with('success', 'Post deleted successfully!');
+        return redirect()
+            ->route('test')
+            ->with('success', 'Post deleted successfully!');
     }
 }
